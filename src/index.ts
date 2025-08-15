@@ -40,7 +40,7 @@ app.openapi(
     responses: {
       200: {
         content: { "application/json": { schema: ProductSchema } },
-        description: "Get all products",
+        description: "Get product by slug",
       },
       404: {
         description: "Product not found",
