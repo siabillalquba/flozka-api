@@ -11,10 +11,13 @@ async function main() {
 
     const product = await prisma.product.upsert({
       where: { slug },
-      update: {},
-      create: {
-        slug,
+      update: {
         ...seedProduct,
+        slug,
+      },
+      create: {
+        ...seedProduct,
+        slug,
       },
     });
     console.log(`🌹 Product: ${product.name} (${product.slug})`);
