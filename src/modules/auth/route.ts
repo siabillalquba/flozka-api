@@ -5,6 +5,7 @@ import { AuthLoginSchema, AuthRegisterSchema } from "./schema";
 
 export const authRoute = new OpenAPIHono();
 
+// register
 authRoute.openapi(
   createRoute({
     method: "post",
@@ -21,22 +22,30 @@ authRoute.openapi(
         content: { "application/json": { schema: PrivateUserSchema } },
         description: "Register success",
       },
+      400: {
+        description: "Register failed",
+      },
     },
   }),
   async (c) => {
     const body = c.req.valid("json");
 
-    const user = await prisma.user.create({
-      data: {
-        email: body.email,
-        fullName: body.fullName,
-      },
-    });
+    try {
+      const user = await prisma.user.create({
+        data: {
+          email: body.email,
+          fullName: body.fullName,
+        },
+      });
 
-    return c.json(user);
+      return c.json(user, 201);
+    } catch (error) {
+      return c.json({ meassage: "Register failed" }, 400);
+    }
   }
 );
 
+// login
 authRoute.openapi(
   createRoute({
     method: "post",
@@ -74,6 +83,7 @@ authRoute.openapi(
   }
 );
 
+// me
 authRoute.openapi(
   createRoute({
     method: "get",
@@ -81,7 +91,7 @@ authRoute.openapi(
     responses: {
       200: {
         content: { "application/json": { schema: PrivateUserSchema } },
-        description: "Login success",
+        description: "Get authenticated user success",
       },
       404: {
         description: "User not found",
