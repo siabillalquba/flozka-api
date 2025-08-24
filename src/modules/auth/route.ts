@@ -9,6 +9,7 @@ import {
 } from "./schema";
 import { hashPassword, verifyPassword } from "../../lib/password";
 import { signToken } from "../../lib/token";
+import { checkAuthorized } from "./middleware";
 
 export const authRoute = new OpenAPIHono();
 
@@ -122,6 +123,7 @@ authRoute.openapi(
     request: {
       headers: AuthHeaderSchema,
     },
+    middleware: checkAuthorized,
     responses: {
       200: {
         content: { "application/json": { schema: PrivateUserSchema } },
@@ -133,10 +135,7 @@ authRoute.openapi(
     },
   }),
   async (c) => {
-    const user = await prisma.user.findFirst();
-    if (!user) {
-      return c.notFound();
-    }
+    const user = c.get("user");
 
     return c.json(user);
   }
