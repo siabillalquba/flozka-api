@@ -11,7 +11,7 @@ const app = new OpenAPIHono();
 app.use(cors());
 
 app.route("/products", productRoute);
-app.route("/user", userRoute);
+app.route("/users", userRoute);
 app.route("/auth", authRoute);
 
 app.doc("/openapi.json", {
